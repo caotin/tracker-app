@@ -1,0 +1,41 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+# Coordinates
+
+type IncomingPayloadData {
+  latitude: Float
+  longitude: Float
+}
+
+# Device info (including location)
+# Every GraphQL type with the @model directive is automatically backed by a new DynamoDB database table.
+# Model directive automatically adds 'createdAt' and 'updatedAt' timestamps to each entities.
+type IncomingData
+  @model(timestamps: { createdAt: "timestamp", updatedAt: null })
+  @auth(
+    rules: [
+      {
+        allow: owner # Allows any signed in user to create records.
+        ownerField: "clientId"
+        operations: [create, update, delete, read]
+      }
+    ]
+  ) {
+  deviceId: String! @primaryKey
+  payload: IncomingPayloadData
+  clientId: String!
+}
+
+# Every GraphQL type with the @model directive is automatically backed by a new DynamoDB database table.
+# Model directive automatically adds 'createdAt' and 'updatedAt' timestamps to each entities.
+type UserDeviceMapping
+  @model(timestamps: { createdAt: "timestamp" })
+  @auth(
+    rules: [
+      { allow: groups, groups: ["admin"] } # Only admins are allowed to do CRUD on device mapping
+    ]
+  ) {
+  clientId: String! @primaryKey
+  deviceIds: [String!]! # One client can have be assigned multiple devices
+}

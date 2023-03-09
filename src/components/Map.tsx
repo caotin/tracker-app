@@ -1,14 +1,14 @@
-import React from 'react'
-import { MapView } from '@aws-amplify/ui-react'
+import { MapView } from '@aws-amplify/ui-react';
 import { NavigationControl } from "react-map-gl";
+import { TrackerControl } from './tracking/TrackerControl';
 
 export const Map = () => {
 
   return (
     <MapView
       initialViewState={{
-        longitude: -115.17077150978058,
-        latitude: 36.12309017212961,
+        longitude: 108.2364958,
+        latitude: 16.0482557,
         zoom: 15,
       }}
       style={{
@@ -17,6 +17,7 @@ export const Map = () => {
       }}
     >
       <NavigationControl position={"top-left"} />
+      <TrackerControl />
     </MapView>
   )
 }
