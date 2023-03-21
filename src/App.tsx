@@ -1,12 +1,14 @@
-import React from 'react';
-import { Map } from './components/Map';
+import { withAuthenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
 import { Amplify, PubSub } from 'aws-amplify';
-import awsconfig from "./awsconfig"
+import awsconfig from "./aws-exports";
+import { Map } from './components/Map';
 
 import './App.css';
 
 Amplify.configure(awsconfig);
 PubSub.configure(awsconfig);
+// Auth.configure(awsconfig);
 
 function App() {
   return (
@@ -16,4 +18,4 @@ function App() {
   );
 }
 
-export default App;
+export default withAuthenticator(App);

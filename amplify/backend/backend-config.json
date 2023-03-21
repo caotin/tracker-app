@@ -1,0 +1,158 @@
+{
+  "api": {
+    "persontracker": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "persontracker19bb1d90"
+        }
+      ],
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+              "userPoolConfig": {
+                "userPoolId": "authpersontracker19bb1d90"
+              }
+            }
+          ],
+          "defaultAuthentication": {
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 7
+            },
+            "authenticationType": "API_KEY"
+          }
+        }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "AppSync"
+    }
+  },
+  "auth": {
+    "persontracker19bb1d90": {
+      "customAuth": false,
+      "dependsOn": [],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
+    }
+  },
+  "function": {
+    "persontrackera55d895e": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "persontrackerbebad453": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "persontracker19bb1d90"
+        },
+        {
+          "attributes": [
+            "Name"
+          ],
+          "category": "geo",
+          "resourceName": "mapb7648833"
+        },
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput",
+            "GraphQLAPIKeyOutput"
+          ],
+          "category": "api",
+          "resourceName": "persontracker"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "geo": {
+    "mapb7648833": {
+      "accessType": "AuthorizedUsers",
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "persontracker19bb1d90"
+        }
+      ],
+      "isDefault": true,
+      "mapStyle": "VectorHereExplore",
+      "providerPlugin": "awscloudformation",
+      "service": "Map"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_persontrackera55d895e_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "persontrackera55d895e"
+        }
+      ]
+    },
+    "AMPLIFY_function_persontrackera55d895e_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "persontrackera55d895e"
+        }
+      ]
+    },
+    "AMPLIFY_function_persontrackerbebad453_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "persontrackerbebad453"
+        }
+      ]
+    },
+    "AMPLIFY_function_persontrackerbebad453_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "persontrackerbebad453"
+        }
+      ]
+    },
+    "AMPLIFY_function_persontrackerbebad453_trackerName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "persontrackerbebad453"
+        }
+      ]
+    }
+  }
+}

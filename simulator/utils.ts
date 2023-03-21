@@ -67,7 +67,7 @@ class Simulator {
     key: string;
   }> {
     if (!this.cert || !this.key) {
-      const cert = fs.readFileSync("./secrets/Pet/Pet.cert.pem", {
+      const cert = fs.readFileSync("./Pet.cert.pem", {
         encoding: "utf-8",
       });
       const keyPair = fs.readFileSync("./secrets/Pet/Pet.private.key", {

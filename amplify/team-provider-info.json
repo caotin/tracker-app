@@ -1,0 +1,37 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-persontracker-dev-15653-authRole",
+      "UnauthRoleArn": "arn:aws:iam::678229375602:role/amplify-persontracker-dev-15653-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::678229375602:role/amplify-persontracker-dev-15653-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-persontracker-dev-15653-deployment",
+      "UnauthRoleName": "amplify-persontracker-dev-15653-unauthRole",
+      "StackName": "amplify-persontracker-dev-15653",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:678229375602:stack/amplify-persontracker-dev-15653/d11bfb70-c687-11ed-9b4e-02ba6582d322",
+      "AmplifyAppId": "d3u90ym8f4vieo"
+    },
+    "categories": {
+      "auth": {
+        "persontracker19bb1d90": {}
+      },
+      "geo": {
+        "mapb7648833": {}
+      },
+      "api": {
+        "persontracker": {}
+      },
+      "function": {
+        "persontrackerbebad453": {
+          "trackerName": "Tracker",
+          "deploymentBucketName": "amplify-persontracker-dev-15653-deployment",
+          "s3Key": "amplify-builds/persontrackerbebad453-656779764c556b515955-build.zip"
+        },
+        "persontrackera55d895e": {
+          "deploymentBucketName": "amplify-persontracker-dev-15653-deployment",
+          "s3Key": "amplify-builds/persontrackera55d895e-475865364f6f79363672-build.zip"
+        }
+      }
+    }
+  }
+}

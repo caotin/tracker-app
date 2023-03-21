@@ -1,0 +1,48 @@
+{
+  "permissions": {
+    "auth": {
+      "persontracker19bb1d90": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    },
+    "geo": {
+      "mapb7648833": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    },
+    "api": {
+      "persontracker": [
+        "Query",
+        "Mutation",
+        "Subscription"
+      ]
+    },
+    "storage": {
+      "IncomingData:@model(appsync)": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "UserDeviceMapping:@model(appsync)": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  },
+  "lambdaLayers": [],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "trackerName",
+      "environmentVariableName": "TRACKER_NAME"
+    }
+  ]
+}

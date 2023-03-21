@@ -1,11 +1,12 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import { GraphQLSubscription } from '@aws-amplify/api';
-import { API } from "aws-amplify";
+import { GRAPHQL_AUTH_MODE, GraphQLSubscription } from '@aws-amplify/api';
+import { API, Auth } from "aws-amplify";
 import { useRef, useState } from "react";
 import { Marker } from "react-map-gl";
-import { IncomingData, onUpdate } from "../../graphql/position";
+import { OnUpdateIncomingDataSubscription, OnUpdateIncomingDataSubscriptionVariables } from '../../API';
+import { onUpdateIncomingData } from '../../graphql/subscriptions';
 import { TrackerButton } from "./TrackerButton";
 
 interface IMarker {
@@ -14,25 +15,39 @@ interface IMarker {
 }
 
 export const TrackerControl = () => {
-  const [marker, setMarker] = useState<IMarker | undefined>({ lat: 16.0482557, lng: 108.2364958 });
+  const [marker, setMarker] = useState<IMarker | undefined>();
   const [isSubscribed, setIsSubscribed] = useState(false);
   const subscriptionRef = useRef<any>();
 
-  const handleSubscriptionToggle = () => {
+  const handleSubscriptionToggle = async () => {
+    const user = await Auth.currentAuthenticatedUser()
+    console.log(user);
+
+    if (!user?.attributes?.sub) return;
     if (isSubscribed) {
       if (subscriptionRef?.current) subscriptionRef?.current.unsubscribe();
       console.info("Unsubscribed from onUpdatePosition AppSync mutation");
       setIsSubscribed(false);
     } else {
-      subscriptionRef.current = API.graphql<GraphQLSubscription<IncomingData>>(
-        onUpdate
+      const variables: OnUpdateIncomingDataSubscriptionVariables = {
+        clientId: user.attributes.sub
+      }
+      subscriptionRef.current = API.graphql<GraphQLSubscription<OnUpdateIncomingDataSubscription>>(
+        // graphqlOperation(onUpdateIncomingData, variables, ),
+        {
+          query: onUpdateIncomingData,
+          variables,
+          authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS
+        }
       ).subscribe({
         next: ({ value: { data } }: any) => {
+          console.log(data);
+          console.info("Subscribed to onUpdatePosition AppSync mutation");
+
           const { onUpdateIncomingData } = data;
           console.debug("Position updated", onUpdateIncomingData);
           const { latitude,
             longitude } = onUpdateIncomingData?.payload || {};
-          // Hub.dispatch("petUpdates", { data: { lng, lat } });
           setMarker({
             lng: longitude,
             lat: latitude,
@@ -40,7 +55,6 @@ export const TrackerControl = () => {
         },
         error: (err: any) => console.error(err),
       });
-      console.info("Subscribed to onUpdatePosition AppSync mutation");
       setIsSubscribed(true);
     }
   };
