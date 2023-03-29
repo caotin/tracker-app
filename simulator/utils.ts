@@ -67,13 +67,12 @@ class Simulator {
     key: string;
   }> {
     if (!this.cert || !this.key) {
-      const cert = fs.readFileSync("./Pet.cert.pem", {
+      const cert = fs.readFileSync("./keys/bot.cert.pem", {
         encoding: "utf-8",
       });
-      const keyPair = fs.readFileSync("./secrets/Pet/Pet.private.key", {
+      const keyPair = fs.readFileSync("./keys/bot.private.key", {
         encoding: "utf-8",
       });
-
       this.cert = cert;
       this.key = keyPair;
 
@@ -114,6 +113,8 @@ class Simulator {
 
   private connect = async () => {
     try {
+      console.log('start - connect');
+      
       this.ioTConnection = await this.buildConnection(this.clientId);
     } catch (err) {
       console.error(err);

@@ -1,83 +1,96 @@
-// import { IoTEvent } from "aws-lambda";
-import { Sha256 } from "@aws-crypto/sha256-js";
-import { defaultProvider } from "@aws-sdk/credential-provider-node";
-import { HttpRequest } from "@aws-sdk/protocol-http";
-import { SignatureV4 } from "@aws-sdk/signature-v4";
-import p from "phin";
-import { URL } from "url";
+/* Amplify Params - DO NOT EDIT
+	API_PERSONTRACKER_GRAPHQLAPIENDPOINTOUTPUT
+	API_PERSONTRACKER_GRAPHQLAPIIDOUTPUT
+	ENV
+	REGION
+Amplify Params - DO NOT EDIT */
+const { Sha256 } = require("@aws-crypto/sha256-js");
+const { defaultProvider } = require("@aws-sdk/credential-provider-node");
+const { SignatureV4 } = require("@aws-sdk/signature-v4");
+const { HttpRequest } = require("@aws-sdk/protocol-http");
+const { default: fetch, Request } = require("node-fetch");
 
-const APPSYNC_ENDPOINT = process.env.GRAPHQL_URL;
-if (!APPSYNC_ENDPOINT) {
-  throw new Error("GRAPHQL_URL env var is not set");
-}
+const GRAPHQL_ENDPOINT = process.env.API_PERSONTRACKER_GRAPHQLAPIENDPOINTOUTPUT;
+const AWS_REGION = process.env.REGION || "ap-southeast-1";
 
-// type Event = Extract<IoTEvent<LocationEvent>, { type: "locationPayload" }>;
-
-exports.handler = async (event) => {
-  const { id, lng, lat } = event;
-
-  const updatePosition = {
-    query: `
-    mutation UpdateIncomingData(
-      $input: UpdateIncomingDataInput!
-      $condition: ModelIncomingDataConditionInput
-      ) {
-        updateIncomingData(input: $input, condition: $condition) {
-          deviceId
-          payload {
-            latitude
-            longitude
-          }
-          clientId
-          timestamp
-        }
+const query = /* GraphQL */ `
+  mutation UpdateIncomingData(
+    $input: UpdateIncomingDataInput!
+    $condition: ModelIncomingDataConditionInput
+  ) {
+    updateIncomingData(input: $input, condition: $condition) {
+      deviceId
+      payload {
+        latitude
+        longitude
       }
-    `,
-    operationName: "UpdateIncomingData",
-    variables: {
-      input: {
-        deviceId: id,
-        payload: { lng, lat },
-        clientId,
-      },
-    },
-  };
+      clientId
+      timestamp
+    }
+  }
+`;
 
-  const url = new URL(APPSYNC_ENDPOINT);
+/**
+ * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
+ */
+exports.handler = async (event) => {
+  console.log(`EVENT: ${JSON.stringify(event)}`);
+  const endpoint = new URL(GRAPHQL_ENDPOINT);
 
-  const request = new HttpRequest({
-    hostname: url.hostname,
-    path: url.pathname,
-    body: JSON.stringify(updatePosition),
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      host: url.hostname,
-    },
-  });
+  const { id, lng, lat, clientId } = event;
 
   const signer = new SignatureV4({
     credentials: defaultProvider(),
+    region: AWS_REGION,
     service: "appsync",
-    region: process.env.AWS_REGION,
     sha256: Sha256,
   });
 
-  const { headers, body, method } = await signer.sign(request);
+  const requestToBeSigned = new HttpRequest({
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      host: endpoint.host,
+    },
+    hostname: endpoint.host,
+    body: JSON.stringify({
+      query,
+      operationName: "UpdateIncomingData",
+      variables: {
+        input: {
+          deviceId: id,
+          payload: { longitude: lng, latitude: lat },
+          clientId,
+        },
+      },
+    }),
+    path: endpoint.pathname,
+  });
+
+  const signed = await signer.sign(requestToBeSigned);
+  const request = new Request(GRAPHQL_ENDPOINT, signed);
+
+  let statusCode = 200;
+  let body;
+  let response;
 
   try {
-    const result = await p({
-      url: APPSYNC_ENDPOINT,
-      headers,
-      data: body,
-      method,
-      timeout: 5000,
-      parse: "json",
-    });
-
-    console.debug(result);
-  } catch (err) {
-    console.error(err);
-    throw new Error("Failed to execute GraphQL mutation");
+    response = await fetch(request);
+    body = await response.json();
+    if (body.errors) statusCode = 400;
+  } catch (error) {
+    statusCode = 500;
+    body = {
+      errors: [
+        {
+          message: error.message,
+        },
+      ],
+    };
   }
+
+  return {
+    statusCode,
+    body: JSON.stringify(body),
+  };
 };
