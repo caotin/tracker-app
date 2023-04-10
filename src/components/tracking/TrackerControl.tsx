@@ -3,11 +3,10 @@
 
 import { GRAPHQL_AUTH_MODE, GraphQLSubscription } from '@aws-amplify/api';
 import { API, Auth } from "aws-amplify";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Marker } from "react-map-gl";
 import { OnUpdateIncomingDataSubscription, OnUpdateIncomingDataSubscriptionVariables } from '../../API';
 import { onUpdateIncomingData } from '../../graphql/subscriptions';
-import { TrackerButton } from "./TrackerButton";
 
 interface IMarker {
   lat?: number
@@ -59,13 +58,12 @@ export const TrackerControl = () => {
     }
   };
 
+  useEffect(() => {
+    handleSubscriptionToggle()
+  }, [])
+
   return (
     <>
-      <TrackerButton
-        onClick={handleSubscriptionToggle}
-        isSubscribed={isSubscribed}
-      />
-
       {marker ? (
         <Marker color="teal" latitude={marker.lat} longitude={marker.lng} />
       ) : null}

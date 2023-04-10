@@ -1,0 +1,47 @@
+.profile-container {
+  position: absolute;
+  right: 30px;
+  top: 30px;
+  display: flex;
+  flex-direction: column;
+  outline: none;
+  border: 0;
+  background: #fff;
+  border-radius: 20px;
+}
+
+.profile-container .profile-name {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: #fff;
+  /* Green */
+  border: none;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 24px;
+  padding-bottom: 6px;
+  transition: 0.3s ease all;
+}
+
+.profile-container .profile-name:hover,
+.profile-container .profile-logout:hover {
+  background-color: #f1f1f1;
+}
+
+.profile-container .profile-logout {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: #fff;
+  border: none;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.3s ease all;
+  font-size: 24px;
+}

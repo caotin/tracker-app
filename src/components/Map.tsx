@@ -1,5 +1,6 @@
 import { MapView } from '@aws-amplify/ui-react';
 import { NavigationControl } from "react-map-gl";
+import { ProfileButton } from './profile/ProfileButton';
 import { TrackerControl } from './tracking/TrackerControl';
 
 export const Map = () => {
@@ -14,10 +15,12 @@ export const Map = () => {
       style={{
         width: "100vw",
         height: "100vh",
+        position: "relative"
       }}
     >
       <NavigationControl position={"top-left"} />
       <TrackerControl />
+      <ProfileButton />
     </MapView>
   )
 }

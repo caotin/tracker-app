@@ -18,4 +18,21 @@ function App() {
   );
 }
 
-export default withAuthenticator(App);
+export default withAuthenticator(App, {
+  formFields: {
+    signUp: {
+      email: {
+        order: 1,
+      },
+      password: {
+        order: 2,
+      },
+      confirm_password: {
+        order: 3,
+      },
+      phone_number: {
+        order: 4,
+      },
+    },
+  }
+});

@@ -22,7 +22,7 @@ type IncomingData
       }
     ]
   ) {
-  deviceId: String! @primaryKey
+  deviceId: ID! @primaryKey
   payload: IncomingPayloadData
   clientId: String!
 }
@@ -30,7 +30,7 @@ type IncomingData
 # Every GraphQL type with the @model directive is automatically backed by a new DynamoDB database table.
 # Model directive automatically adds 'createdAt' and 'updatedAt' timestamps to each entities.
 type UserDeviceMapping
-  @model(timestamps: { createdAt: "timestamp" })
+  @model(timestamps: { createdAt: "timestamp", updatedAt: null })
   @auth(
     rules: [
       { allow: groups, groups: ["admin"] } # Only admins are allowed to do CRUD on device mapping
