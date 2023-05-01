@@ -1,5 +1,6 @@
 import { MapView } from '@aws-amplify/ui-react';
 import { NavigationControl } from "react-map-gl";
+import { GeofencesControl } from './geofences/GeofencesControl';
 import { ProfileButton } from './profile/ProfileButton';
 import { TrackerControl } from './tracking/TrackerControl';
 
@@ -19,6 +20,7 @@ export const Map = () => {
       }}
     >
       <NavigationControl position={"top-left"} />
+      <GeofencesControl />
       <TrackerControl />
       <ProfileButton />
     </MapView>

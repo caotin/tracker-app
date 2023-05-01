@@ -21,17 +21,20 @@ function App() {
 export default withAuthenticator(App, {
   formFields: {
     signUp: {
-      email: {
+      name: {
         order: 1,
       },
-      password: {
+      email: {
         order: 2,
       },
-      confirm_password: {
+      password: {
         order: 3,
       },
-      phone_number: {
+      confirm_password: {
         order: 4,
+      },
+      phone_number: {
+        order: 5,
       },
     },
   }
